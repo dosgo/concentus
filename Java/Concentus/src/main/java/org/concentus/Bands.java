@@ -34,6 +34,8 @@
  */
 package org.concentus;
 
+import javax.swing.text.Style;
+
 class Bands {
 
     static int hysteresis_decision(
@@ -872,8 +874,10 @@ class Bands {
 
             BoxedValueInt boxed_b = new BoxedValueInt(b);
             BoxedValueInt boxed_fill = new BoxedValueInt(fill);
+             System.out.println("compute_theta-1 b:"+b);
             compute_theta(ctx, sctx, X, X_ptr, X, Y, N, boxed_b, B, B0, LM, 0, boxed_fill);
             b = boxed_b.Val;
+            System.out.println("compute_theta b:"+b);
             fill = boxed_fill.Val;
 
             imid = sctx.imid;
@@ -928,6 +932,8 @@ class Bands {
         } else {
             /* This is the basic no-split case */
             q = Rate.bits2pulses(m, i, LM, b);
+
+             System.out.println("bits2pulses i:"+i+" LM:"+LM+"b:"+b);
             curr_bits = Rate.pulses2bits(m, i, LM, q);
             ctx.remaining_bits -= curr_bits;
 
@@ -941,7 +947,7 @@ class Bands {
 
             if (q != 0) {
                 int K = Rate.get_pulses(q);
-
+	            System.out.println("k:"+K+" q:"+q);
                 /* Finally do the actual quantization */
                 if (encode != 0) {
                     cm = VQ.alg_quant(X, X_ptr, N, K, spread, B, ec);
@@ -1003,6 +1009,8 @@ class Bands {
             int N, int b, int B, int[] lowband, int lowband_ptr,
             int LM, int[] lowband_out, int lowband_out_ptr,
             int gain, int[] lowband_scratch, int lowband_scratch_ptr, int fill) {
+
+           	System.out.println("quant_band b:"+ b);     
         int N0 = N;
         int N_B = N;
         int N_B0;
@@ -1296,6 +1304,7 @@ class Bands {
             int dual_stereo, int intensity, int[] tf_res, int total_bits,
             int balance, EntropyCoder ec, int LM, int codedBands,
             BoxedValueInt seed) {
+                System.out.println("quant_all_bands dual_stereo:"+dual_stereo);
         int i;
         int remaining_bits;
         short[] eBands = m.eBands;
@@ -1480,6 +1489,7 @@ class Bands {
                             lowband_scratch_ptr,
                             (int) (x_cm | y_cm));
                 } else {
+                    System.out.println("quant_band-1");
                     x_cm = quant_band(
                             ctx,
                             X,
