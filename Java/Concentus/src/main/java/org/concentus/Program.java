@@ -55,6 +55,15 @@ public class Program {
                 int bytesEncoded = encoder.encode(pcm, 0, packetSamples, data_packet, 0, 1275);
                 //System.out.println(bytesEncoded + " bytes encoded");
 
+                   System.out.println(bytesEncoded + " bytes encoded");
+                  
+                   StringBuilder hexBuilder = new StringBuilder();
+                    for (byte b : data_packet) {
+                        hexBuilder.append(String.format("%d ",b & 0xFF));
+                    }
+
+                    System.out.println("data_packet:" + hexBuilder);
+
                 int samplesDecoded = decoder.decode(data_packet, 0, bytesEncoded, pcm, 0, packetSamples, false);
                 //System.out.println(samplesDecoded + " samples decoded");
                 byte[] bytesOut = ShortsToBytes(pcm);
