@@ -155,7 +155,7 @@ public class OpusEncoder {
     }
 
     public void printAllFields() {
-        /* 
+        
         System.out.println("silk_mode: " + silk_mode);
         System.out.println("application: " + application);
         System.out.println("channels: " + channels);
@@ -190,7 +190,10 @@ public class OpusEncoder {
         System.out.println("first: " + first);
         System.out.println("energy_masking: " +  java.util.Arrays.toString(energy_masking));
         System.out.println("width_mem: {XX:" + width_mem.XX+"XY:"+width_mem.XY+"YY:"+width_mem.YY+"smoothed_width:"+width_mem.smoothed_width+"max_follower:"+width_mem.max_follower+"}");
-        */
+         System.out.println("rangeFinal: " + rangeFinal);
+
+         	 System.out.println("enc.Celt_Encoder.mode.overlap:"+ Celt_Encoder.mode.overlap);
+
         /*/
 
        // System.out.println("delay_buffer: " +  java.util.Arrays.toString(delay_buffer));
@@ -203,9 +206,9 @@ public class OpusEncoder {
       //       SilkEncoder.state_Fxx[i].printAllFields();
        // }
        */
-
-        System.out.println("enc.Celt_Encoder.oldBandE:"+  java.util.Arrays.deepToString(this.Celt_Encoder.oldBandE));
-        System.out.println("Celt_Encoder: " + Celt_Encoder);
+       //  System.out.println("enc.delay_buffer:"+ java.util.Arrays.toString(this.delay_buffer));
+      //  System.out.println("enc.Celt_Encoder.oldBandE:"+  java.util.Arrays.deepToString(this.Celt_Encoder.oldBandE));
+       // System.out.println("Celt_Encoder: " + Celt_Encoder);
 }
     /**
      * Allocates and initializes an encoder state. Note that regardless of the
@@ -765,6 +768,7 @@ public class OpusEncoder {
             this.detected_bandwidth = OpusBandwidthHelpers.MAX(this.detected_bandwidth, min_detected_bandwidth);
             this.bandwidth = OpusBandwidthHelpers.MIN(this.bandwidth, this.detected_bandwidth);
         }
+        System.out.println("lsb_depth:"+lsb_depth);
         celt_enc.SetLSBDepth(lsb_depth);
 
         /* CELT mode doesn't support mediumband, use wideband instead */
@@ -1129,6 +1133,8 @@ public class OpusEncoder {
                 celt_enc.SetVBR(true);
                 celt_enc.SetVBRConstraint(this.vbr_constraint != 0);
                 celt_enc.SetBitrate(this.bitrate_bps + bonus);
+                System.out.println("SetVBRConstraint st.vbr_constraint:"+this.vbr_constraint+" st.bitrate_bps:"+ this.bitrate_bps+"  bonus:"+bonus);
+		
                 nb_compr_bytes = max_data_bytes - 1 - redundancy_bytes;
             } else {
                 nb_compr_bytes = bytes_target;
@@ -1227,6 +1233,7 @@ public class OpusEncoder {
             celt_enc.SetStartBand(0);
             celt_enc.SetVBR(false);
             err = celt_enc.celt_encode_with_ec(pcm_buf, 0, this.Fs / 200, data, data_ptr + nb_compr_bytes, redundancy_bytes, null);
+            	
             if (err < 0) {
                 return OpusError.OPUS_INTERNAL_ERROR;
             }
@@ -1247,7 +1254,10 @@ public class OpusEncoder {
             }
             /* If false, we already busted the budget and we'll end up with a "PLC packet" */
             if (enc.tell() <= 8 * nb_compr_bytes) {
+                   System.out.println("data buf:"+ java.util.Arrays.toString(data));
+                Arrays.printObjectFields(this);
                 ret = celt_enc.celt_encode_with_ec(pcm_buf, 0, frame_size, null, 0, nb_compr_bytes, enc);
+               // System.out.println("pcm_buf:"+ java.util.Arrays.toString(pcm_buf));
                 if (ret < 0) {
                     return OpusError.OPUS_INTERNAL_ERROR;
                 }

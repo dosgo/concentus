@@ -33,6 +33,7 @@ package org.concentus;
 import java.security.MessageDigest;
 import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
+import java.lang.reflect.Field;
 class Arrays {
 
     static int[][] InitTwoDimensionalArrayInt(int x, int y) {
@@ -212,6 +213,28 @@ class Arrays {
         }
         return null;
     }
+    public static void printObjectFields(Object obj) {
+        if (obj == null) {
+            System.out.println("Object is null");
+            return;
+        }
 
+        Class<?> clazz = obj.getClass();
+        System.out.println("Fields of class: " + clazz.getName());
+
+        // 获取所有字段（包括私有）
+        Field[] fields = clazz.getDeclaredFields();
+
+        for (Field field : fields) {
+            try {
+                // 设置可访问，以便访问私有字段
+                field.setAccessible(true);
+                Object value = field.get(obj);
+                System.out.println(field.getName() + ": " + value);
+            } catch (IllegalAccessException e) {
+                System.out.println(field.getName() + ": [Access Exception]");
+            }
+        }
+    }
 
 }

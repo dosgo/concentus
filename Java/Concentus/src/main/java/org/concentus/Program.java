@@ -38,7 +38,7 @@ public class Program {
             FileInputStream fileIn = new FileInputStream("./48Khz Stereo.raw");
             OpusEncoder encoder = new OpusEncoder(48000, 2, OpusApplication.OPUS_APPLICATION_AUDIO);
             encoder.setBitrate(96000);
-            encoder.setForceMode(OpusMode.MODE_CELT_ONLY);
+            encoder.setForceMode(OpusMode.MODE_SILK_ONLY);
             encoder.setSignalType(OpusSignal.OPUS_SIGNAL_MUSIC);
             encoder.setComplexity(0);
             
@@ -54,20 +54,24 @@ public class Program {
             
                 int bytesRead = fileIn.read(inBuf, 0, inBuf.length);
                 short[] pcm = BytesToShorts(inBuf, 0, inBuf.length);
-
+                /* 
                 if(i<3){
                     i++;
                     continue;
-                }
+                }*/
               
                 if(i>4){
                  break;
                 }
+                       
+               // encoder.printAllFields();
                      System.out.println("imput md5:" +Arrays.generateMD5(inBuf));
                 int bytesEncoded = encoder.encode(pcm, 0, packetSamples, data_packet, 0, 1275);
                 
-                encoder.printAllFields();
-              
+                 if(i==4){
+                    System.out.println("data_packet:"+java.util.Arrays.toString(data_packet));
+                 }   
+               
             
                 
                       
