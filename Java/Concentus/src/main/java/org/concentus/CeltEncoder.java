@@ -652,7 +652,6 @@ class CeltEncoder {
                 bandE[0][i] = Inlines.MAX32(bandE[0][i], CeltConstants.EPSILON);
             }
         }
- System.out.print("amp2Log2 bandE:"+java.util.Arrays.deepToString(bandE));
         QuantizeBands.amp2Log2(mode, effEnd, end, bandE, bandLogE, C);
 
         surround_dynalloc = new int[C * nbEBands];
@@ -1069,7 +1068,6 @@ class CeltEncoder {
         /* Residual quantisation */
         collapse_masks = new short[C * nbEBands];
         BoxedValueInt boxed_rng = new BoxedValueInt(this.rng);
-        System.out.print("bandE:"+java.util.Arrays.deepToString(bandE));
         Bands.quant_all_bands(1, mode, start, end, X[0], C == 2 ? X[1] : null, collapse_masks,
                 bandE, pulses, shortBlocks, this.spread_decision,
                 dual_stereo, this.intensity, tf_res, nbCompressedBytes * (8 << EntropyCoder.BITRES) - anti_collapse_rsv,

@@ -30,6 +30,9 @@
  */
 package org.concentus;
 
+import java.security.MessageDigest;
+import java.nio.ByteBuffer;
+
 class Arrays {
 
     static int[][] InitTwoDimensionalArrayInt(int x, int y) {
@@ -107,5 +110,32 @@ class Arrays {
     static void MemMove(int[] array, int src_idx, int dst_idx, int length) {
         System.arraycopy(array, src_idx, array, dst_idx, length);
     }
+
+     public static String intArrayToMD5(int[] array)  {
+        try{
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            // 直接处理整数数组，避免中间转换
+            for (int num : array) {
+                // 每个整数转为4字节大端序
+                md.update(new byte[] {
+                    (byte)(num >>> 24),
+                    (byte)(num >>> 16),
+                    (byte)(num >>> 8),
+                    (byte)num
+                });
+            }
+            // 生成十六进制MD5
+            byte[] digest = md.digest();
+            StringBuilder sb = new StringBuilder();
+            for (byte b : digest) {
+                sb.append(String.format("%02x", b & 0xFF));
+            }
+            return sb.toString();
+        }catch(Exception e){
+
+        }
+        return null;
+    }
+
 
 }

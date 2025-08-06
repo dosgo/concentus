@@ -229,7 +229,9 @@ class Rate {
             if (encode != 0) {
                 ec.enc_bit_logp(dual_stereo.Val, 1);
             } else {
+
                 dual_stereo.Val = ec.dec_bit_logp(1);
+            
             }
         } else {
             dual_stereo.Val = 0;

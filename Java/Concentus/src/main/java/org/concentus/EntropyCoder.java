@@ -269,6 +269,7 @@ class EntropyCoder {
                 - ((EC_CODE_BITS - EC_CODE_EXTRA) / EC_SYM_BITS) * EC_SYM_BITS;
         this.offs = 0;
         this.rng = 1 << EC_CODE_EXTRA;
+
         this.rem = read_byte();
         this.val = Inlines.CapToUInt32(this.rng - 1 - (this.rem >> (EC_SYM_BITS - EC_CODE_EXTRA)));
         this.error = 0;
@@ -296,6 +297,8 @@ class EntropyCoder {
         long s = Inlines.CapToUInt32(this.ext * (_ft - _fh));
         this.val = this.val - s;
         this.rng = _fl > 0 ? Inlines.CapToUInt32(this.ext * (_fh - _fl)) : this.rng - s;
+
+       
         dec_normalize();
     }
 

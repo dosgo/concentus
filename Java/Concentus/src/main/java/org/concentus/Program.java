@@ -50,24 +50,26 @@ public class Program {
             byte[] data_packet = new byte[1275];
             long start = System.currentTimeMillis();
             while (fileIn.available() >= inBuf.length) {
+            
                 int bytesRead = fileIn.read(inBuf, 0, inBuf.length);
                 short[] pcm = BytesToShorts(inBuf, 0, inBuf.length);
                 int bytesEncoded = encoder.encode(pcm, 0, packetSamples, data_packet, 0, 1275);
-                //System.out.println(bytesEncoded + " bytes encoded");
+      
 
                    System.out.println(bytesEncoded + " bytes encoded");
                   
                    StringBuilder hexBuilder = new StringBuilder();
                     for (byte b : data_packet) {
-                        hexBuilder.append(String.format("%d ",b & 0xFF));
+                        hexBuilder.append(String.format("%d,",b & 0xFF));
                     }
-
+                    
                     System.out.println("data_packet:" + hexBuilder);
-
+        
                 int samplesDecoded = decoder.decode(data_packet, 0, bytesEncoded, pcm, 0, packetSamples, false);
-                //System.out.println(samplesDecoded + " samples decoded");
+                System.out.println(samplesDecoded + " samples decoded");
                 byte[] bytesOut = ShortsToBytes(pcm);
-                fileOut.write(bytesOut, 0, bytesOut.length);
+                    
+                            System.exit(0);
                 break;
             }
             

@@ -485,6 +485,7 @@ class CeltDecoder {
         eBands = mode.eBands;
         start = this.start;
         end = this.end;
+
         frame_size *= this.downsample;
 
         oldBandE = this.oldEBands;
