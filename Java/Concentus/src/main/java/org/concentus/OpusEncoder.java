@@ -154,6 +154,59 @@ public class OpusEncoder {
         variable_HP_smth2_Q15 = Inlines.silk_LSHIFT(Inlines.silk_lin2log(TuningParameters.VARIABLE_HP_MIN_CUTOFF_HZ), 8);
     }
 
+    public void printAllFields() {
+        /* 
+        System.out.println("silk_mode: " + silk_mode);
+        System.out.println("application: " + application);
+        System.out.println("channels: " + channels);
+        System.out.println("delay_compensation: " + delay_compensation);
+        System.out.println("force_channels: " + force_channels);
+        System.out.println("signal_type: " + signal_type);
+        System.out.println("user_bandwidth: " + user_bandwidth);
+        System.out.println("max_bandwidth: " + max_bandwidth);
+        System.out.println("user_forced_mode: " + user_forced_mode);
+        System.out.println("voice_ratio: " + voice_ratio);
+        System.out.println("Fs: " + Fs);
+        System.out.println("use_vbr: " + use_vbr);
+        System.out.println("vbr_constraint: " + vbr_constraint);
+        System.out.println("variable_duration: " + variable_duration);
+        System.out.println("bitrate_bps: " + bitrate_bps);
+        System.out.println("user_bitrate_bps: " + user_bitrate_bps);
+        System.out.println("lsb_depth: " + lsb_depth);
+        System.out.println("encoder_buffer: " + encoder_buffer);
+        System.out.println("lfe: " + lfe);
+        System.out.println("analysis: " + analysis);
+        System.out.println("stream_channels: " + stream_channels);
+        System.out.println("hybrid_stereo_width_Q14: " + hybrid_stereo_width_Q14);
+        System.out.println("variable_HP_smth2_Q15: " + variable_HP_smth2_Q15);
+        System.out.println("prev_HB_gain: " + prev_HB_gain);
+        System.out.println("hp_mem: " + java.util.Arrays.toString(hp_mem));
+        System.out.println("mode: " + mode);
+        System.out.println("prev_mode: " + prev_mode);
+        System.out.println("prev_channels: " + prev_channels);
+        System.out.println("prev_framesize: " + prev_framesize);
+        System.out.println("bandwidth: " + bandwidth);
+        System.out.println("silk_bw_switch: " + silk_bw_switch);
+        System.out.println("first: " + first);
+        System.out.println("energy_masking: " +  java.util.Arrays.toString(energy_masking));
+        System.out.println("width_mem: {XX:" + width_mem.XX+"XY:"+width_mem.XY+"YY:"+width_mem.YY+"smoothed_width:"+width_mem.smoothed_width+"max_follower:"+width_mem.max_follower+"}");
+        */
+        /*/
+
+       // System.out.println("delay_buffer: " +  java.util.Arrays.toString(delay_buffer));
+        System.out.println("detected_bandwidth: " + detected_bandwidth);
+        System.out.println("rangeFinal: " + rangeFinal);
+       // System.out.println("SilkEncoder: " + SilkEncoder);
+        System.out.println("SilkEncoder: " +java.util.Arrays.deepToString( SilkEncoder.sStereo.predIx));
+       
+      //  for (int i=0; i<SilkEncoder.state_Fxx.length; i++){
+      //       SilkEncoder.state_Fxx[i].printAllFields();
+       // }
+       */
+
+        System.out.println("enc.Celt_Encoder.oldBandE:"+  java.util.Arrays.deepToString(this.Celt_Encoder.oldBandE));
+        System.out.println("Celt_Encoder: " + Celt_Encoder);
+}
     /**
      * Allocates and initializes an encoder state. Note that regardless of the
      * sampling rate and number channels selected, the Opus encoder can switch

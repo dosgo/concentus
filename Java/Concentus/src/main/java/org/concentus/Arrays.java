@@ -32,7 +32,7 @@ package org.concentus;
 
 import java.security.MessageDigest;
 import java.nio.ByteBuffer;
-
+import java.security.NoSuchAlgorithmException;
 class Arrays {
 
     static int[][] InitTwoDimensionalArrayInt(int x, int y) {
@@ -111,6 +111,82 @@ class Arrays {
         System.arraycopy(array, src_idx, array, dst_idx, length);
     }
 
+      public static String generateMD5(byte[] data) {
+        try {
+            // 获取 MD5 消息摘要实例
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            
+            // 更新数据
+            md.update(data);
+            
+            // 计算哈希值
+            byte[] digest = md.digest();
+            
+            // 转换为十六进制字符串
+            StringBuilder sb = new StringBuilder();
+            for (byte b : digest) {
+                sb.append(String.format("%02x", b & 0xFF));
+            }
+            return sb.toString();
+            
+        } catch (NoSuchAlgorithmException e) {
+            // 处理异常（MD5 算法在所有Java实现中都可用，此异常通常不会发生）
+            throw new RuntimeException("MD5 algorithm not available", e);
+        }
+    }
+     public static String generateMD5(short[] data) {
+        try {
+            // 获取 MD5 消息摘要实例
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            
+            // 处理每个 short 值
+            for (short num : data) {
+                // 将 short 转换为 2 字节大端序表示
+                md.update(new byte[] {
+                    (byte) (num >> 8), // 高字节
+                    (byte) num         // 低字节
+                });
+            }
+            
+            // 计算哈希值
+            byte[] digest = md.digest();
+            
+            // 转换为十六进制字符串
+            StringBuilder sb = new StringBuilder();
+            for (byte b : digest) {
+                sb.append(String.format("%02x", b & 0xFF));
+            }
+            return sb.toString();
+            
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("MD5 algorithm not available", e);
+        }
+    }
+     public static String int16ArrayToMD5(int[] array)  {
+        try{
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            // 直接处理整数数组，避免中间转换
+            for (int num : array) {
+                // 每个整数转为4字节大端序
+                md.update(new byte[] {
+                    (byte)(num >>> 24),
+                    (byte)(num >>> 16),
+                    (byte)(num >>> 8),
+                    (byte)num
+                });
+            }
+            // 生成十六进制MD5
+            byte[] digest = md.digest();
+            StringBuilder sb = new StringBuilder();
+            for (byte b : digest) {
+                sb.append(String.format("%02x", b & 0xFF));
+            }
+            return sb.toString();
+        }catch(Exception e){
+
+        }
+        return null;
+    }
      public static String intArrayToMD5(int[] array)  {
         try{
             MessageDigest md = MessageDigest.getInstance("MD5");

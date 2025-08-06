@@ -49,28 +49,40 @@ public class Program {
             byte[] inBuf = new byte[packetSamples * 2 * 2];
             byte[] data_packet = new byte[1275];
             long start = System.currentTimeMillis();
+            int i=0;
             while (fileIn.available() >= inBuf.length) {
             
                 int bytesRead = fileIn.read(inBuf, 0, inBuf.length);
                 short[] pcm = BytesToShorts(inBuf, 0, inBuf.length);
-                int bytesEncoded = encoder.encode(pcm, 0, packetSamples, data_packet, 0, 1275);
-      
 
-                   System.out.println(bytesEncoded + " bytes encoded");
-                  
-                   StringBuilder hexBuilder = new StringBuilder();
-                    for (byte b : data_packet) {
-                        hexBuilder.append(String.format("%d,",b & 0xFF));
-                    }
-                    
-                    System.out.println("data_packet:" + hexBuilder);
+                if(i<3){
+                    i++;
+                    continue;
+                }
+              
+                if(i>4){
+                 break;
+                }
+                     System.out.println("imput md5:" +Arrays.generateMD5(inBuf));
+                int bytesEncoded = encoder.encode(pcm, 0, packetSamples, data_packet, 0, 1275);
+                
+                encoder.printAllFields();
+              
+            
+                
+                      
+                    System.out.println("bytesEncoded:"+bytesEncoded+" data_packet:" +Arrays.generateMD5(data_packet));
         
-                int samplesDecoded = decoder.decode(data_packet, 0, bytesEncoded, pcm, 0, packetSamples, false);
-                System.out.println(samplesDecoded + " samples decoded");
-                byte[] bytesOut = ShortsToBytes(pcm);
+                    int samplesDecoded = decoder.decode(data_packet, 0, bytesEncoded, pcm, 0, packetSamples, false);
+                   // System.out.println(samplesDecoded + " samples decoded");
                     
-                            System.exit(0);
-                break;
+                 
+                    byte[] bytesOut = ShortsToBytes(pcm);
+                               System.out.println("pcm:" + Arrays.generateMD5(pcm)); 
+                   // System.exit(0);
+                       i++;
+                   
+                
             }
             
             long end = System.currentTimeMillis();

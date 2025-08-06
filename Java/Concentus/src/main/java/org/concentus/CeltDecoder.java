@@ -594,6 +594,8 @@ class CeltDecoder {
         QuantizeBands.unquant_coarse_energy(mode, start, end, oldBandE,
                 intra_ener, dec, C, LM);
 
+          
+
         tf_res = new int[nbEBands];
         CeltCommon.tf_decode(start, end, isTransient, tf_res, LM, dec);
 
@@ -662,7 +664,6 @@ class CeltDecoder {
         balance = boxed_balance.Val;
 
         QuantizeBands.unquant_fine_energy(mode, start, end, oldBandE, fine_quant, dec, C);
-
         c = 0;
         do {
             Arrays.MemMove(decode_mem[c], N, 0, CeltConstants.DECODE_BUFFER_SIZE - N + overlap / 2);
@@ -675,24 +676,26 @@ class CeltDecoder {
         /**
          * < Interleaved normalised MDCTs
          */
-
         BoxedValueInt boxed_rng = new BoxedValueInt(this.rng);
+        
         Bands.quant_all_bands(0, mode, start, end, X[0], C == 2 ? X[1] : null, collapse_masks,
                 null, pulses, shortBlocks, spread_decision, dual_stereo, intensity, tf_res,
                 len * (8 << EntropyCoder.BITRES) - anti_collapse_rsv, balance, dec, LM, codedBands, boxed_rng);
+              
         this.rng = boxed_rng.Val;
 
         if (anti_collapse_rsv > 0) {
             anti_collapse_on = dec.dec_bits(1);
         }
-
         QuantizeBands.unquant_energy_finalise(mode, start, end, oldBandE,
                 fine_quant, fine_priority, len * 8 - dec.tell(), dec, C);
 
         if (anti_collapse_on != 0) {
+
             Bands.anti_collapse(mode, X, collapse_masks, LM, C, N,
                     start, end, oldBandE, oldLogE, oldLogE2, pulses, this.rng);
         }
+
 
         if (silence != 0) {
             for (i = 0; i < C * nbEBands; i++) {
@@ -702,6 +705,7 @@ class CeltDecoder {
 
         CeltCommon.celt_synthesis(mode, X, out_syn, out_syn_ptrs, oldBandE, start, effEnd,
                 C, CC, isTransient, LM, this.downsample, silence);
+
 
         c = 0;
         do {

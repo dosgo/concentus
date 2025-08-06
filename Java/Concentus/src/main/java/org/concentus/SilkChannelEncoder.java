@@ -201,7 +201,152 @@ class SilkChannelEncoder {
             indices_LBRR[c] = new SideInfoIndices();
         }
     }
-
+public void printAllFields() {
+    System.out.println("In_HP_State: " +  java.util.Arrays.toString(In_HP_State));
+    System.out.println("variable_HP_smth1_Q15: " + variable_HP_smth1_Q15);
+    System.out.println("variable_HP_smth2_Q15: " + variable_HP_smth2_Q15);
+    System.out.println("sLP: " + sLP);
+    System.out.println("sVAD: " + sVAD);
+    System.out.println("sNSQ: " + sNSQ);
+    
+    System.out.println("prev_NLSFq_Q15: " + (prev_NLSFq_Q15 != null ?  java.util.Arrays.toString(prev_NLSFq_Q15) : "null"));
+    System.out.println("speech_activity_Q8: " + speech_activity_Q8);
+    System.out.println("allow_bandwidth_switch: " + allow_bandwidth_switch);
+    System.out.println("LBRRprevLastGainIndex: " + (int)LBRRprevLastGainIndex);
+    System.out.println("prevSignalType: " + (int)prevSignalType);
+    System.out.println("prevLag: " + prevLag);
+    System.out.println("pitch_LPC_win_length: " + pitch_LPC_win_length);
+    System.out.println("max_pitch_lag: " + max_pitch_lag);
+    System.out.println("API_fs_Hz: " + API_fs_Hz);
+    System.out.println("prev_API_fs_Hz: " + prev_API_fs_Hz);
+    System.out.println("maxInternal_fs_Hz: " + maxInternal_fs_Hz);
+    System.out.println("minInternal_fs_Hz: " + minInternal_fs_Hz);
+    System.out.println("desiredInternal_fs_Hz: " + desiredInternal_fs_Hz);
+    System.out.println("fs_kHz: " + fs_kHz);
+    System.out.println("nb_subfr: " + nb_subfr);
+    System.out.println("frame_length: " + frame_length);
+    System.out.println("subfr_length: " + subfr_length);
+    System.out.println("ltp_mem_length: " + ltp_mem_length);
+    System.out.println("la_pitch: " + la_pitch);
+    System.out.println("la_shape: " + la_shape);
+    System.out.println("shapeWinLength: " + shapeWinLength);
+    System.out.println("TargetRate_bps: " + TargetRate_bps);
+    System.out.println("PacketSize_ms: " + PacketSize_ms);
+    System.out.println("PacketLoss_perc: " + PacketLoss_perc);
+    System.out.println("frameCounter: " + frameCounter);
+    System.out.println("Complexity: " + Complexity);
+    System.out.println("nStatesDelayedDecision: " + nStatesDelayedDecision);
+    System.out.println("useInterpolatedNLSFs: " + useInterpolatedNLSFs);
+    System.out.println("shapingLPCOrder: " + shapingLPCOrder);
+    System.out.println("predictLPCOrder: " + predictLPCOrder);
+    System.out.println("pitchEstimationComplexity: " + pitchEstimationComplexity);
+    System.out.println("pitchEstimationLPCOrder: " + pitchEstimationLPCOrder);
+    System.out.println("pitchEstimationThreshold_Q16: " + pitchEstimationThreshold_Q16);
+    System.out.println("LTPQuantLowComplexity: " + LTPQuantLowComplexity);
+    System.out.println("mu_LTP_Q9: " + mu_LTP_Q9);
+    System.out.println("sum_log_gain_Q7: " + sum_log_gain_Q7);
+    System.out.println("NLSF_MSVQ_Survivors: " + NLSF_MSVQ_Survivors);
+    System.out.println("first_frame_after_reset: " + first_frame_after_reset);
+    System.out.println("controlled_since_last_payload: " + controlled_since_last_payload);
+    System.out.println("warping_Q16: " + warping_Q16);
+    System.out.println("useCBR: " + useCBR);
+    System.out.println("prefillFlag: " + prefillFlag);
+    
+    System.out.println("pitch_lag_low_bits_iCDF: " + (pitch_lag_low_bits_iCDF != null ?  java.util.Arrays.toString(pitch_lag_low_bits_iCDF) : "null"));
+    System.out.println("pitch_contour_iCDF: " + (pitch_contour_iCDF != null ? java.util.Arrays.toString(pitch_contour_iCDF) : "null"));
+    System.out.println("psNLSF_CB: " + psNLSF_CB);
+    System.out.println("input_quality_bands_Q15: " +  java.util.Arrays.toString(input_quality_bands_Q15));
+    System.out.println("input_tilt_Q15: " + input_tilt_Q15);
+    System.out.println("SNR_dB_Q7: " + SNR_dB_Q7);
+    
+    // VAD_flags 数组处理
+    System.out.println("VAD_flags: " +  java.util.Arrays.toString(VAD_flags));
+    
+    System.out.println("LBRR_flag: " + (int)LBRR_flag);
+    
+    // LBRR_flags 数组处理
+    System.out.println("LBRR_flags: " +  java.util.Arrays.toString(LBRR_flags));
+    
+    System.out.println("indices: " + indices);
+    
+    System.out.println("pulses: " + (pulses != null ?  java.util.Arrays.toString(pulses) : "null"));
+    
+    // 显示 inputBuf 前10个元素
+    if (inputBuf != null) {
+        System.out.print("inputBuf (first 10): [");
+        for (int i = 0; i < 10 && i < inputBuf.length; i++) {
+            if (i > 0) {
+                System.out.print(", ");
+            }
+            System.out.print(inputBuf[i]);
+        }
+        if (inputBuf.length > 10) {
+            System.out.println(", ...(" + (inputBuf.length - 10) + " more)]");
+        } else {
+            System.out.println("]");
+        }
+    } else {
+        System.out.println("inputBuf: null");
+    }
+    
+    System.out.println("inputBufIx: " + inputBufIx);
+    System.out.println("nFramesPerPacket: " + nFramesPerPacket);
+    System.out.println("nFramesEncoded: " + nFramesEncoded);
+    System.out.println("nChannelsAPI: " + nChannelsAPI);
+    System.out.println("nChannelsInternal: " + nChannelsInternal);
+    System.out.println("channelNb: " + channelNb);
+    System.out.println("frames_since_onset: " + frames_since_onset);
+    System.out.println("ec_prevSignalType: " + ec_prevSignalType);
+    System.out.println("ec_prevLagIndex: " + ec_prevLagIndex);
+    
+    System.out.println("resampler_state: " + resampler_state);
+    
+    System.out.println("useDTX: " + useDTX);
+    System.out.println("inDTX: " + inDTX);
+    System.out.println("noSpeechCounter: " + noSpeechCounter);
+    System.out.println("useInBandFEC: " + useInBandFEC);
+    System.out.println("LBRR_enabled: " + LBRR_enabled);
+    System.out.println("LBRR_GainIncreases: " + LBRR_GainIncreases);
+    
+    // indices_LBRR 处理
+    if (indices_LBRR != null) {
+        System.out.println("indices_LBRR:");
+        for (int i = 0; i < indices_LBRR.length; i++) {
+            System.out.println("  [" + i + "]: " + (indices_LBRR[i] != null ? indices_LBRR[i].toString() : "null"));
+        }
+    } else {
+        System.out.println("indices_LBRR: null");
+    }
+    
+    // pulses_LBRR 处理
+    System.out.println("pulses_LBRR:");
+    if (pulses_LBRR != null) {
+        for (int i = 0; i < pulses_LBRR.length; i++) {
+            System.out.println("  [" + i + "]: " + (pulses_LBRR[i] != null ?  java.util.Arrays.toString(pulses_LBRR[i]) : "null"));
+        }
+    } else {
+        System.out.println("  null");
+    }
+    
+    System.out.println("sShape: " + sShape);
+    System.out.println("sPrefilt: " + sPrefilt);
+    
+    // x_buf 显示前10个元素
+    System.out.print("x_buf (first 10): [");
+    for (int i = 0; i < 10 && i < x_buf.length; i++) {
+        if (i > 0) {
+            System.out.print(", ");
+        }
+        System.out.print(x_buf[i]);
+    }
+    if (x_buf.length > 10) {
+        System.out.println(", ...(" + (x_buf.length - 10) + " more)]");
+    } else {
+        System.out.println("]");
+    }
+    
+    System.out.println("LTPCorr_Q15: " + LTPCorr_Q15);
+}
     void Reset() {
         Arrays.MemSet(In_HP_State, 0, 2);
         variable_HP_smth1_Q15 = 0;

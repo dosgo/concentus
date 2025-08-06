@@ -1419,7 +1419,7 @@ class Bands {
                always) be non-zero. */ else {
                 x_cm = y_cm = ((1 << B) - 1);
             }
-
+        
             if (dual_stereo != 0 && i == intensity) {
                 int j;
 
@@ -1430,8 +1430,10 @@ class Bands {
                         norm[j] = (Inlines.HALF32(norm[j] + norm[norm2 + j]));
                     }
                 }
+              
             }
             if (dual_stereo != 0) {
+                 
                 x_cm = quant_band(ctx,
                         X,
                         X_ptr,
@@ -1466,6 +1468,7 @@ class Bands {
                         (int) y_cm);
             } else {
                 if (Y != null) {
+                    
                     x_cm = quant_band_stereo(
                             ctx,
                             X,
@@ -1483,7 +1486,9 @@ class Bands {
                             lowband_scratch,
                             lowband_scratch_ptr,
                             (int) (x_cm | y_cm));
+                              
                 } else {
+                    
                     x_cm = quant_band(
                             ctx,
                             X,

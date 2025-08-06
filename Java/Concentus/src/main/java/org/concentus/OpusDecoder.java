@@ -442,7 +442,6 @@ public class OpusDecoder {
 
         /* MUST be after PLC */
         celt_dec.SetStartBand(start_band);
-
         if (mode != OpusMode.MODE_SILK_ONLY) {
             int celt_frame_size = Inlines.IMIN(F20, frame_size);
             /* Make sure to discard any previous CELT state */
