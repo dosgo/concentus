@@ -248,7 +248,7 @@ class EncodeAPI {
                     //silk_memcpy(&psEnc.state_Fxx[1].resampler_state, &psEnc.state_Fxx[0].resampler_state, sizeof(psEnc.state_Fxx[1].resampler_state));
                     psEnc.state_Fxx[1].resampler_state.Assign(psEnc.state_Fxx[0].resampler_state);
                 }
-
+                  
                 ret += Resampler.silk_resampler(
                         psEnc.state_Fxx[0].resampler_state,
                         psEnc.state_Fxx[0].inputBuf,
@@ -257,6 +257,7 @@ class EncodeAPI {
                         0,
                         nSamplesFromInput);
 
+   
                 psEnc.state_Fxx[0].inputBufIx += nSamplesToBuffer;
 
                 nSamplesToBuffer = psEnc.state_Fxx[1].frame_length - psEnc.state_Fxx[1].inputBufIx;
@@ -385,7 +386,7 @@ class EncodeAPI {
                     for (n = 0; n < encControl.nChannelsInternal; n++) {
                         Arrays.MemSet(psEnc.state_Fxx[n].LBRR_flags, 0, SilkConstants.MAX_FRAMES_PER_PACKET);
                     }
-
+                 
                     psEnc.nBitsUsedLBRR = psRangeEnc.tell();
                 }
 
@@ -408,8 +409,8 @@ class EncodeAPI {
                 } else {
                     TargetRate_bps = Inlines.silk_SMULBB(nBits, 50);
                 }
-
-                /* Subtract fraction of bits in excess of target in previous frames and packets */
+   
+                 /* Subtract fraction of bits in excess of target in previous frames and packets */
                 TargetRate_bps -= Inlines.silk_DIV32_16(Inlines.silk_MUL(psEnc.nBitsExceeded, 1000), TuningParameters.BITRESERVOIR_DECAY_TIME_MS);
 
                 if (prefillFlag == 0 && psEnc.state_Fxx[0].nFramesEncoded > 0) {
@@ -420,7 +421,7 @@ class EncodeAPI {
 
                 /* Never exceed input bitrate */
                 TargetRate_bps = Inlines.silk_LIMIT(TargetRate_bps, encControl.bitRate, 5000);
-
+       
                 /* Convert Left/Right to Mid/Side */
                 if (encControl.nChannelsInternal == 2) {
                     BoxedValueByte midOnlyFlagBoxed = new BoxedValueByte(psEnc.sStereo.mid_only_flags[psEnc.state_Fxx[0].nFramesEncoded]);

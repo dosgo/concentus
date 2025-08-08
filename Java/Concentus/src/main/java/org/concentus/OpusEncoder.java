@@ -152,6 +152,7 @@ public class OpusEncoder {
         mode = OpusMode.MODE_HYBRID;
         bandwidth = OpusBandwidth.OPUS_BANDWIDTH_FULLBAND;
         variable_HP_smth2_Q15 = Inlines.silk_LSHIFT(Inlines.silk_lin2log(TuningParameters.VARIABLE_HP_MIN_CUTOFF_HZ), 8);
+        System.out.println("\r\\nResetState\r\n");
     }
 
     public void printAllFields() {
@@ -338,7 +339,6 @@ public class OpusEncoder {
         this.bandwidth = OpusBandwidth.OPUS_BANDWIDTH_FULLBAND;
 
         Analysis.tonality_analysis_init(this.analysis);
-
         return OpusError.OPUS_OK;
     }
 
@@ -633,6 +633,7 @@ public class OpusEncoder {
             if (celt_to_silk == 0) {
                 /* Switch to SILK/hybrid if frame size is 10 ms or more*/
                 if (frame_size >= this.Fs / 100) {
+                    
                     this.mode = this.prev_mode;
                     to_celt = 1;
                 } else {
@@ -768,7 +769,6 @@ public class OpusEncoder {
             this.detected_bandwidth = OpusBandwidthHelpers.MAX(this.detected_bandwidth, min_detected_bandwidth);
             this.bandwidth = OpusBandwidthHelpers.MIN(this.bandwidth, this.detected_bandwidth);
         }
-        System.out.println("lsb_depth:"+lsb_depth);
         celt_enc.SetLSBDepth(lsb_depth);
 
         /* CELT mode doesn't support mediumband, use wideband instead */
@@ -896,9 +896,10 @@ public class OpusEncoder {
         if (this.mode != OpusMode.MODE_CELT_ONLY) {
             int total_bitRate, celt_rate;
             short[] pcm_silk = new short[this.channels * frame_size];
-
             /* Distribute bits between SILK and CELT */
             total_bitRate = 8 * bytes_target * frame_rate;
+        
+           
             if (this.mode == OpusMode.MODE_HYBRID) {
                 int HB_gain_ref;
                 /* Base rate for SILK */
@@ -1255,7 +1256,7 @@ public class OpusEncoder {
             /* If false, we already busted the budget and we'll end up with a "PLC packet" */
             if (enc.tell() <= 8 * nb_compr_bytes) {
                    System.out.println("data buf:"+ java.util.Arrays.toString(data));
-                Arrays.printObjectFields(this);
+               // Arrays.printObjectFields(this);
                 ret = celt_enc.celt_encode_with_ec(pcm_buf, 0, frame_size, null, 0, nb_compr_bytes, enc);
                // System.out.println("pcm_buf:"+ java.util.Arrays.toString(pcm_buf));
                 if (ret < 0) {

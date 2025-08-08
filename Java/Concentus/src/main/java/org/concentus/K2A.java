@@ -61,7 +61,6 @@ class K2A {
     ) {
         int k, n;
         int[] Atmp = new int[SilkConstants.SILK_MAX_ORDER_LPC];
-
         for (k = 0; k < order; k++) {
             for (n = 0; n < k; n++) {
                 Atmp[n] = A_Q24[n];

@@ -85,6 +85,7 @@ public class Program {
                                System.out.println("pcm:" + Arrays.generateMD5(pcm)); 
                    // System.exit(0);
                        i++;
+                       break;
                    
                 
             }

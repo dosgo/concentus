@@ -46,10 +46,12 @@ class BWExpander {
     ) {
         int i;
         int chirp_minus_one_Q16 = chirp_Q16 - 65536;
-
+        
         for (i = 0; i < d - 1; i++) {
             ar[i] = Inlines.silk_SMULWW(chirp_Q16, ar[i]);
+      
             chirp_Q16 += Inlines.silk_RSHIFT_ROUND(Inlines.silk_MUL(chirp_Q16, chirp_minus_one_Q16), 16);
+           
         }
         ar[d - 1] = Inlines.silk_SMULWW(chirp_Q16, ar[d - 1]);
     }

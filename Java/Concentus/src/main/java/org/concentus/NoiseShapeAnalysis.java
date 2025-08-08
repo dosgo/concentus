@@ -152,7 +152,7 @@ class NoiseShapeAnalysis {
             int pitch_res_ptr,
             short[] x, /* I    Input signal [ frame_length + la_shape ]                                    */
             int x_ptr
-    ) {
+    ) {   
         SilkShapeState psShapeSt = psEnc.sShape;
         int k, i, nSamples, Qnrg, b_Q14, warping_Q16, scale = 0;
         int SNR_adj_dB_Q7, HarmBoost_Q16, HarmShapeGain_Q16, Tilt_Q16, tmp32;
@@ -177,7 +177,7 @@ class NoiseShapeAnalysis {
          * *************
          */
         SNR_adj_dB_Q7 = psEnc.SNR_dB_Q7;
-
+        	
         /* Input quality is the average of the quality in the lowest two VAD bands */
         psEncCtrl.input_quality_Q14 = (int) Inlines.silk_RSHIFT((int) psEnc.input_quality_bands_Q15[0]
                 + psEnc.input_quality_bands_Q15[1], 2);
@@ -264,10 +264,15 @@ class NoiseShapeAnalysis {
          */
         /* More BWE for signals with high prediction gain */
         strength_Q16 = Inlines.silk_SMULWB(psEncCtrl.predGain_Q16, ((int) ((TuningParameters.FIND_PITCH_WHITE_NOISE_FRACTION) * ((long) 1 << (16)) + 0.5))/*Inlines.SILK_CONST(TuningParameters.FIND_PITCH_WHITE_NOISE_FRACTION, 16)*/);
+        	
+
         BWExp1_Q16 = BWExp2_Q16 = Inlines.silk_DIV32_varQ(((int) ((TuningParameters.BANDWIDTH_EXPANSION) * ((long) 1 << (16)) + 0.5))/*Inlines.SILK_CONST(TuningParameters.BANDWIDTH_EXPANSION, 16)*/,
                 Inlines.silk_SMLAWW(((int) ((1.0f) * ((long) 1 << (16)) + 0.5))/*Inlines.SILK_CONST(1.0f, 16)*/, strength_Q16, strength_Q16), 16);
-        delta_Q16 = Inlines.silk_SMULWB(((int) ((1.0f) * ((long) 1 << (16)) + 0.5))/*Inlines.SILK_CONST(1.0f, 16)*/ - Inlines.silk_SMULBB(3, psEncCtrl.coding_quality_Q14),
+        
+            delta_Q16 = Inlines.silk_SMULWB(((int) ((1.0f) * ((long) 1 << (16)) + 0.5))/*Inlines.SILK_CONST(1.0f, 16)*/ - Inlines.silk_SMULBB(3, psEncCtrl.coding_quality_Q14),
                 ((int) ((TuningParameters.LOW_RATE_BANDWIDTH_EXPANSION_DELTA) * ((long) 1 << (16)) + 0.5))/*Inlines.SILK_CONST(TuningParameters.LOW_RATE_BANDWIDTH_EXPANSION_DELTA, 16)*/);
+        
+            
         BWExp1_Q16 = Inlines.silk_SUB32(BWExp1_Q16, delta_Q16);
         BWExp2_Q16 = Inlines.silk_ADD32(BWExp2_Q16, delta_Q16);
         /* BWExp1 will be applied after BWExp2, so make it relative */
@@ -308,7 +313,10 @@ class NoiseShapeAnalysis {
                 Autocorrelation.silk_warped_autocorrelation(auto_corr, scale_boxed, x_windowed, warping_Q16, psEnc.shapeWinLength, psEnc.shapingLPCOrder);
             } else {
                 /* Calculate regular auto correlation */
+             
                 Autocorrelation.silk_autocorr(auto_corr, scale_boxed, x_windowed, psEnc.shapeWinLength, psEnc.shapingLPCOrder + 1);
+                  
+		
             }
             scale = scale_boxed.Val;
 
@@ -317,12 +325,17 @@ class NoiseShapeAnalysis {
                     ((int) ((TuningParameters.SHAPE_WHITE_NOISE_FRACTION) * ((long) 1 << (20)) + 0.5))/*Inlines.SILK_CONST(TuningParameters.SHAPE_WHITE_NOISE_FRACTION, 20)*/), 1));
 
             /* Calculate the reflection coefficients using schur */
+  
+	
             nrg = Schur.silk_schur64(refl_coef_Q16, auto_corr, psEnc.shapingLPCOrder);
+          
             Inlines.OpusAssert(nrg >= 0);
 
             /* Convert reflection coefficients to prediction coefficients */
             K2A.silk_k2a_Q16(AR2_Q24, refl_coef_Q16, psEnc.shapingLPCOrder);
 
+
+  
             Qnrg = -scale;
             /* range: -12...30*/
             Inlines.OpusAssert(Qnrg >= -12);
@@ -353,7 +366,7 @@ class NoiseShapeAnalysis {
 
             /* Bandwidth expansion for synthesis filter shaping */
             BWExpander.silk_bwexpander_32(AR2_Q24, psEnc.shapingLPCOrder, BWExp2_Q16);
-
+            
             /* Compute noise shaping filter coefficients */
             System.arraycopy(AR2_Q24, 0, AR1_Q24, 0, psEnc.shapingLPCOrder);
 
@@ -364,6 +377,7 @@ class NoiseShapeAnalysis {
             /* Ratio of prediction gains, in energy domain */
             pre_nrg_Q30 = LPCInversePredGain.silk_LPC_inverse_pred_gain_Q24(AR2_Q24, psEnc.shapingLPCOrder);
             nrg = LPCInversePredGain.silk_LPC_inverse_pred_gain_Q24(AR1_Q24, psEnc.shapingLPCOrder);
+         
 
             /*psEncCtrl.GainsPre[ k ] = 1.0f - 0.7f * ( 1.0f - pre_nrg / nrg ) = 0.3f + 0.7f * pre_nrg / nrg;*/
             pre_nrg_Q30 = Inlines.silk_LSHIFT32(Inlines.silk_SMULWB(pre_nrg_Q30, ((int) ((0.7f) * ((long) 1 << (15)) + 0.5))/*Inlines.SILK_CONST(0.7f, 15)*/), 1);

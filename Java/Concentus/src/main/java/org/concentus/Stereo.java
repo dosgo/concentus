@@ -135,7 +135,7 @@ class Stereo {
         BoxedValueInt scale1 = new BoxedValueInt(0);
         BoxedValueInt scale2 = new BoxedValueInt(0);
         int corr, pred_Q13, pred2_Q10;
-
+       
         /* Find predictor */
         SumSqrShift.silk_sum_sqr_shift(nrgx, scale1, x, length);
         SumSqrShift.silk_sum_sqr_shift(nrgy, scale2, y, length);
@@ -143,10 +143,14 @@ class Stereo {
         scale = scale + (scale & 1);
         /* make even */
         nrgy.Val = Inlines.silk_RSHIFT32(nrgy.Val, scale - scale2.Val);
+      
         nrgx.Val = Inlines.silk_RSHIFT32(nrgx.Val, scale - scale1.Val);
         nrgx.Val = Inlines.silk_max_int(nrgx.Val, 1);
+      
         corr = Inlines.silk_inner_prod_aligned_scale(x, y, scale, length);
+      
         pred_Q13 = Inlines.silk_DIV32_varQ(corr, nrgx.Val, 13);
+       // System.exit(0);
         pred_Q13 = Inlines.silk_LIMIT(pred_Q13, -(1 << 14), 1 << 14);
         pred2_Q10 = Inlines.silk_SMULWB(pred_Q13, pred_Q13);
 
@@ -199,6 +203,7 @@ class Stereo {
             int toMono,
             int fs_kHz,
             int frame_length) {
+                             
         int n, is10msFrame, denom_Q16, delta0_Q13, delta1_Q13;
         int sum, diff, smooth_coef_Q16, pred0_Q13, pred1_Q13;
         int[] pred_Q13 = new int[2];
@@ -221,6 +226,8 @@ class Stereo {
             x1[mid + n] = (short) Inlines.silk_RSHIFT_ROUND(sum, 1);
             side[n] = (short) Inlines.silk_SAT16(Inlines.silk_RSHIFT_ROUND(diff, 1));
         }
+   
+
 
         /* Buffering */
         System.arraycopy(state.sMid, 0, x1, mid, 2);
@@ -266,9 +273,14 @@ class Stereo {
             total_rate_bps = 1;
         }
         min_mid_rate_bps = Inlines.silk_SMLABB(2000, fs_kHz, 900);
+       
         Inlines.OpusAssert(min_mid_rate_bps < 32767);
         /* Default bitrate distribution: 8 parts for Mid and (5+3*frac) parts for Side. so: mid_rate = ( 8 / ( 13 + 3 * frac ) ) * total_ rate */
         frac_3_Q16 = Inlines.silk_MUL(3, frac_Q16);
+
+     
+                
+
         mid_side_rates_bps[0] = Inlines.silk_DIV32_varQ(total_rate_bps, ((int) ((8 + 5) * ((long) 1 << (16)) + 0.5))/*Inlines.SILK_CONST(8 + 5, 16)*/ + frac_3_Q16, 16 + 3);
         /* If Mid bitrate below minimum, reduce stereo width */
         if (mid_side_rates_bps[0] < min_mid_rate_bps) {

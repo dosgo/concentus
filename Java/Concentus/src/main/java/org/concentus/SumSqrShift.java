@@ -117,7 +117,9 @@ class SumSqrShift {
 
         for (i = 0; i < len; i += 2) {
             nrg = Inlines.silk_SMLABB_ovflw(nrg, x[i], x[i]);
+            // System.out.println("nrg0: " + nrg+"x[i]:"+x[i]);
             nrg = Inlines.silk_SMLABB_ovflw(nrg, x[i + 1], x[i + 1]);
+             // System.out.println("nrg01: " + nrg+"x[i+1]:"+x[i+1]);
             if (nrg < 0) {
                 /* Scale down */
                 nrg = ((int) Inlines.silk_RSHIFT_uint(nrg, 2));
@@ -134,6 +136,7 @@ class SumSqrShift {
             if (nrg < 0) {
                 /* Scale down */
                 nrg = ((int) Inlines.silk_RSHIFT_uint(nrg, 2));
+               //   System.out.println("nrg2: " + nrg);
                 shft += 2;
             }
         }
@@ -147,11 +150,16 @@ class SumSqrShift {
         /* Make sure to have at least one extra leading zero (two leading zeros in total) */
         if ((nrg & 0xC0000000) != 0) {
             nrg = ((int) Inlines.silk_RSHIFT_uint(nrg, 2));
+           // System.out.println("nrg3: " + nrg);
             shft += 2;
         }
 
         /* Output arguments */
         shift.Val = shft;
         energy.Val = nrg;
+        //System.out.println("energy.Val:%d"+ energy.Val);
+        //System.exit(0);
     }
+
+
 }

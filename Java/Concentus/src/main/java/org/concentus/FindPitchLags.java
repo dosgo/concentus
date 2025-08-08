@@ -41,6 +41,7 @@ class FindPitchLags {
             short[] x, /* I    Speech signal                                                               */
             int x_ptr
     ) {
+        
         int buf_len, i, scale;
         int thrhld_Q13, res_nrg;
         int x_buf, x_buf_ptr;
@@ -80,12 +81,13 @@ class FindPitchLags {
         x_buf_ptr = x_buf + buf_len - psEnc.pitch_LPC_win_length;
         Wsig_ptr = 0;
         ApplySineWindow.silk_apply_sine_window(Wsig, Wsig_ptr, x, x_buf_ptr, 1, psEnc.la_pitch);
-
+        
+   
         /* Middle un - windowed samples */
         Wsig_ptr += psEnc.la_pitch;
         x_buf_ptr += psEnc.la_pitch;
         System.arraycopy(x, x_buf_ptr, Wsig, Wsig_ptr, (psEnc.pitch_LPC_win_length - Inlines.silk_LSHIFT(psEnc.la_pitch, 1)));
-
+       
         /* Last LA_LTP samples */
         Wsig_ptr += psEnc.pitch_LPC_win_length - Inlines.silk_LSHIFT(psEnc.la_pitch, 1);
         x_buf_ptr += psEnc.pitch_LPC_win_length - Inlines.silk_LSHIFT(psEnc.la_pitch, 1);
@@ -93,6 +95,8 @@ class FindPitchLags {
 
         /* Calculate autocorrelation sequence */
         BoxedValueInt boxed_scale = new BoxedValueInt(0);
+       
+
         Autocorrelation.silk_autocorr(auto_corr, boxed_scale, Wsig, psEnc.pitch_LPC_win_length, psEnc.pitchEstimationLPCOrder + 1);
         scale = boxed_scale.Val;
 

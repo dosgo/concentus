@@ -200,8 +200,7 @@ class Resampler {
         nSamples = S.Fs_in_kHz - S.inputDelay;
 
         short[] delayBufPtr = S.delayBuf;
-
-        /* Copy to delay buffer */
+   /* Copy to delay buffer */
         System.arraycopy(input, input_ptr, delayBufPtr, S.inputDelay, nSamples);
 
         switch (S.resampler_function) {
@@ -214,8 +213,11 @@ class Resampler {
                 silk_resampler_private_IIR_FIR(S, output, output_ptr + S.Fs_out_kHz, input, input_ptr + nSamples, inLen - S.Fs_in_kHz);
                 break;
             case USE_silk_resampler_private_down_FIR:
+         
                 silk_resampler_private_down_FIR(S, output, output_ptr, delayBufPtr, 0, S.Fs_in_kHz);
+               
                 silk_resampler_private_down_FIR(S, output, output_ptr + S.Fs_out_kHz, input, input_ptr + nSamples, inLen - S.Fs_in_kHz);
+             
                 break;
             default:
                 System.arraycopy(delayBufPtr, 0, output, output_ptr, S.Fs_in_kHz);

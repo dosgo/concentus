@@ -921,7 +921,6 @@ public void printAllFields() {
         int k, ret = SilkError.SILK_NO_ERROR;
         int frac_Q6;
         int[] rateTable;
-
         /* Set bitrate/coding quality */
         TargetRate_bps = Inlines.silk_LIMIT(TargetRate_bps, SilkConstants.MIN_TARGET_RATE_BPS, SilkConstants.MAX_TARGET_RATE_BPS);
         if (TargetRate_bps != this.TargetRate_bps) {
@@ -947,6 +946,7 @@ public void printAllFields() {
                     frac_Q6 = Inlines.silk_DIV32(Inlines.silk_LSHIFT(TargetRate_bps - rateTable[k - 1], 6),
                             rateTable[k] - rateTable[k - 1]);
                     this.SNR_dB_Q7 = Inlines.silk_LSHIFT(SilkTables.silk_SNR_table_Q1[k - 1], 6) + Inlines.silk_MUL(frac_Q6, SilkTables.silk_SNR_table_Q1[k] - SilkTables.silk_SNR_table_Q1[k - 1]);
+                   
                     break;
                 }
             }
@@ -1042,6 +1042,8 @@ public void printAllFields() {
         /**
          * ************************************
          */
+            System.out.println("silk_encode_frame s.inputBuf-1:"+ java.util.Arrays.toString(this.inputBuf));
+
         this.sLP.silk_LP_variable_cutoff(this.inputBuf, 1, this.frame_length);
 
         /**
@@ -1051,6 +1053,9 @@ public void printAllFields() {
         /**
          * ****************************************
          */
+         // System.out.println("silk_find_pitch_lags x:"+Arrays.generateMD5(x));
+          	System.out.println("silk_encode_frame s.x_buf:-1"+ Arrays.generateMD5(this.x_buf));
+            System.out.println("silk_encode_frame s.inputBuf:"+ Arrays.generateMD5(this.inputBuf));
         System.arraycopy(this.inputBuf, 1, this.x_buf, x_frame + SilkConstants.LA_SHAPE_MS * this.fs_kHz, this.frame_length);
 
         if (this.prefillFlag == 0) {

@@ -137,6 +137,8 @@ class LPCInversePredGain {
         int k;
         int[][] Atmp_QA = Arrays.InitTwoDimensionalArrayInt(2, SilkConstants.SILK_MAX_ORDER_LPC);
         int[] Anew_QA;
+   
+
 
         Anew_QA = Atmp_QA[order & 1];
 

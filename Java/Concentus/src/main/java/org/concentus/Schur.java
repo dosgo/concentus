@@ -143,7 +143,6 @@ class Schur {
 
             /* Get reflection coefficient: divide two Q30 values and get result in Q31 */
             rc_tmp_Q31 = Inlines.silk_DIV32_varQ(-C[k + 1][0], C[0][1], 31);
-
             /* Save the output */
             rc_Q16[k] = Inlines.silk_RSHIFT_ROUND(rc_tmp_Q31, 15);
 
@@ -157,7 +156,6 @@ class Schur {
                 C[n][1] = Ctmp2_Q30 + Inlines.silk_SMMUL(Inlines.silk_LSHIFT(Ctmp1_Q30, 1), rc_tmp_Q31);
             }
         }
-
         for (; k < order; k++) {
             rc_Q16[k] = 0;
         }
