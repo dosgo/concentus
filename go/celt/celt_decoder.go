@@ -397,15 +397,14 @@ func (ed *CeltDecoder) Celt_decode_with_ec(data []byte, data_ptr int, length int
 	postfilter_tapset = 0
 	if start == 0 && tell+16 <= total_bits {
 		if dec.Dec_bit_logp(1) != 0 {
-			//var qg int
-			var octave int
+			var qg, octave int
 			octave = int(dec.Dec_uint(6))
-			postfilter_pitch = (16 << octave) + dec.Dec_bits(4+octave) - 1
-			dec.Dec_bits(3)
+			postfilter_pitch = (16 << octave) + dec.Dec_bits(4+int(octave)) - 1
+			qg = dec.Dec_bits(3)
 			if dec.Tell()+2 <= total_bits {
-				postfilter_tapset = dec.Dec_icdf(tapset_icdf[:], 2)
+				postfilter_tapset = dec.Dec_icdf(tapset_icdf, 2)
 			}
-			postfilter_gain = int(math.Trunc(0.5 + (0.09375)*(1<<15)))
+			postfilter_gain = int(int16(math.Trunc(0.5+(0.09375)*float64(int32(1)<<(15))))) * (qg + 1)
 		}
 		tell = dec.Tell()
 	}
@@ -540,6 +539,7 @@ func (ed *CeltDecoder) Celt_decode_with_ec(data []byte, data_ptr int, length int
 	for {
 		ed.postfilter_period = inlines.IMAX(ed.postfilter_period, CeltConstants.COMBFILTER_MINPERIOD)
 		ed.postfilter_period_old = inlines.IMAX(ed.postfilter_period_old, CeltConstants.COMBFILTER_MINPERIOD)
+
 		comb_filter(out_syn[c], out_syn_ptrs[c], out_syn[c], out_syn_ptrs[c], ed.postfilter_period_old, ed.postfilter_period, mode.ShortMdctSize, ed.postfilter_gain_old, ed.postfilter_gain, ed.postfilter_tapset_old, ed.postfilter_tapset, mode.Window, overlap)
 		if LM != 0 {
 			comb_filter(out_syn[c], out_syn_ptrs[c]+mode.ShortMdctSize, out_syn[c], out_syn_ptrs[c]+mode.ShortMdctSize, ed.postfilter_period, postfilter_pitch, N-mode.ShortMdctSize, ed.postfilter_gain, postfilter_gain, ed.postfilter_tapset, postfilter_tapset, mode.Window, overlap)
@@ -586,13 +586,13 @@ func (ed *CeltDecoder) Celt_decode_with_ec(data []byte, data_ptr int, length int
 	for {
 		for i = 0; i < start; i++ {
 			oldBandE[c*nbEBands+i] = 0
-			oldLogE[c*nbEBands+i] = -int(0.5 + 28.0*float64(int(1)<<CeltConstants.DB_SHIFT))
-			oldLogE2[c*nbEBands+i] = -int(0.5 + 28.0*float64(int(1)<<CeltConstants.DB_SHIFT))
+			oldLogE[c*nbEBands+i] = -int(0.5 + 28.0*float64(int32(1)<<CeltConstants.DB_SHIFT))
+			oldLogE2[c*nbEBands+i] = -int(0.5 + 28.0*float64(int32(1)<<CeltConstants.DB_SHIFT))
 		}
 		for i = end; i < nbEBands; i++ {
 			oldBandE[c*nbEBands+i] = 0
-			oldLogE[c*nbEBands+i] = -int(0.5 + 28.0*float64(int(1)<<CeltConstants.DB_SHIFT))
-			oldLogE2[c*nbEBands+i] = -int(0.5 + 28.0*float64(int(1)<<CeltConstants.DB_SHIFT))
+			oldLogE[c*nbEBands+i] = -int(0.5 + 28.0*float64(int32(1)<<CeltConstants.DB_SHIFT))
+			oldLogE2[c*nbEBands+i] = -int(0.5 + 28.0*float64(int32(1)<<CeltConstants.DB_SHIFT))
 		}
 		c++
 		if !(c < 2) {
@@ -600,7 +600,6 @@ func (ed *CeltDecoder) Celt_decode_with_ec(data []byte, data_ptr int, length int
 		}
 	}
 	ed.rng = int(dec.Rng)
-
 	deemphasis(out_syn, out_syn_ptrs, pcm, pcm_ptr, N, CC, ed.downsample, mode.Preemph, ed.preemph_memD, accum)
 	ed.loss_count = 0
 

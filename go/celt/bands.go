@@ -48,7 +48,7 @@ func hysteresis_decision(val int, thresholds []int, hysteresis []int, N int, pre
 }
 
 func celt_lcg_rand(seed int) int {
-	return 1664525*seed + 1013904223
+	return int(int32(1664525*seed + 1013904223))
 }
 
 func bitexact_cos(x int) int {
@@ -235,7 +235,7 @@ func anti_collapse(m *CeltMode, X_ [][]int, collapse_masks []int16, LM int, C in
 			X = int(m.eBands[i] << LM)
 			for k = 0; k < 1<<LM; k++ {
 				/* Detect collapse */
-				if (collapse_masks[i*C+c] & 1 << k) == 0 {
+				if int32(collapse_masks[i*C+c])&int32(1<<k) == 0 {
 					/* Fill with noise */
 					Xk := X + k
 					for j = 0; j < N0; j++ {
@@ -277,7 +277,6 @@ func intensity_stereo(m *CeltMode, X []int, X_ptr int, Y []int, Y_ptr int, bandE
 	a1 = inlines.DIV32_16Int(inlines.SHL32(left, 14), norm)
 	a2 = inlines.DIV32_16Int(inlines.SHL32(right, 14), norm)
 	for j = 0; j < N; j++ {
-		//   System.out.println("eeeeee\r\n");
 		var r, l int
 		l = X[X_ptr+j]
 		r = Y[Y_ptr+j]
@@ -447,7 +446,6 @@ func deinterleave_hadamard(X []int, X_ptr int, N0 int, stride int, hadamard int)
 		}
 	}
 
-	//System.arraycopy(tmp, 0, X, X_ptr, N)
 	copy(X[X_ptr:], tmp[0:N])
 }
 
@@ -665,7 +663,6 @@ func compute_theta1(ctx *band_ctx, sctx *split_ctx, X []int, X_ptr int, Y []int,
 		iside = bitexact_cos((16384 - itheta))
 		/* This is the mid vs side allocation that minimizes squared error
 		   in that band. */
-		//System.out.println("compute_theta-1 delta:"+ delta);
 		delta = inlines.FRAC_MUL16((N-1)<<7, bitexact_log2tan(iside, imid))
 	}
 
@@ -1054,6 +1051,7 @@ func quant_partition(ctx *band_ctx, X []int, X_ptr int, N int, b int, B int, low
 						for j = 0; j < N; j++ {
 							var tmp int
 							ctx.seed = celt_lcg_rand(ctx.seed)
+
 							/* About 48 dB below the "normal" folding level */
 							tmp = int(math.Trunc(0.5 + (1.0/256)*float64(int32(1)<<(10))))
 							if ((ctx.seed) & 0x8000) != 0 {
@@ -1368,7 +1366,7 @@ func quant_all_bands(encode int, m *CeltMode, start int, end int, X_ []int, Y_ [
 	if encode == 0 {
 		resynth = 1
 	}
-
+	update_lowband := 1
 	for i := start; i < end; i++ {
 		ctx.i = i
 		last := 0
@@ -1394,7 +1392,6 @@ func quant_all_bands(encode int, m *CeltMode, start int, end int, X_ []int, Y_ [
 			b = inlines.IMAX(0, inlines.IMIN(16383, inlines.IMIN(remaining_bits+1, pulses[i]+curr_balance)))
 		}
 
-		update_lowband := 1
 		effective_lowband := -1
 		var x_cm = int64(0)
 		var y_cm = int64(0)
@@ -1402,7 +1399,6 @@ func quant_all_bands(encode int, m *CeltMode, start int, end int, X_ []int, Y_ [
 		if resynth != 0 && M*int(eBands[i])-N >= M*int(eBands[start]) && (update_lowband != 0 || lowband_offset == 0) {
 			lowband_offset = i
 		}
-
 		tf_change := tf_res[i]
 		ctx.tf_change = tf_change
 
@@ -1426,6 +1422,7 @@ func quant_all_bands(encode int, m *CeltMode, start int, end int, X_ []int, Y_ [
 			var fold_i int
 			/* This ensures we never repeat spectral content within one band */
 			effective_lowband = inlines.IMAX(0, M*int(eBands[lowband_offset])-norm_offset-N)
+
 			fold_start = lowband_offset
 			fold_start--
 			for M*int(eBands[fold_start]) > effective_lowband+norm_offset {
@@ -1468,7 +1465,6 @@ func quant_all_bands(encode int, m *CeltMode, start int, end int, X_ []int, Y_ [
 		}
 
 		if dual_stereo != 0 {
-
 			var lowband []int
 			var lowband_out []int
 			if effective_lowband != -1 {
@@ -1504,7 +1500,6 @@ func quant_all_bands(encode int, m *CeltMode, start int, end int, X_ []int, Y_ [
 					lowband_scratch,
 					lowband_scratch_ptr,
 					int(x_cm|y_cm)))
-
 			} else {
 
 				x_cm = int64(quant_band(
